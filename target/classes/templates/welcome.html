@@ -1,0 +1,181 @@
+<bean id="templateResolver" class="org.thymeleaf.templateresolver.ServletContextTemplateResolver">
+    <property name="templateMode" value="LEGACYHTML5"/>
+    <property name="cacheable" value="false"/>
+</bean>
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="https://fonts.googleapis.com/css?family=Inconsolata|Roboto:400,700&display=swap" rel="stylesheet">
+    <title>Barcode Foundry</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.10.19/css/jquery.dataTables.min.css">
+    <script src="https://cdn.datatables.net/1.10.19/js/jquery.dataTables.min.js"></script>
+
+    <style type="text/css">
+        body{
+            color: #fff;
+            background: #63738a;
+            font-family: 'Roboto', sans-serif;
+        }
+        .form-control{
+            height: 40px;
+            box-shadow: none;
+            color: #969fa4;
+        }
+        .form-control:focus{
+            border-color: #5cb85c;
+        }
+        .form-control, .btn{
+            border-radius: 3px;
+        }
+        .app-name{
+            font-size: 25px;
+            font-family: monospace;
+        }
+        .welcome-card{
+            margin-top: 50px;
+        }
+        .card{
+            background-color: #404040 !important;
+        }
+        .card-title, .card-text{
+            font-family: 'Inconsolata', monospace;
+        }
+        #copy-button{
+            cursor: pointer;
+        }
+        .footer {
+            position: fixed;
+            left: 0;
+            bottom: 0;
+            width: 100%;
+            background-color: #5b6f8c;
+            color: #aebacc;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+
+<nav class="navbar navbar-dark">
+    <span class="app-name">Barcode Foundry</span>
+    <ul class="nav navbar-nav navbar-right">
+        <li><button type="button" class="btn btn-sm btn-primary" onclick="location.href ='/logout'">Logout</button></li>
+    </ul>
+</nav>
+</body>
+
+<div class="container">
+    <div class="row">
+        <div class="col-sm-12 welcome-card">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">Hello <span class="user-name">User</span>,</h5>
+                    <p class="card-text">Here is your API token</p>
+                    <div class="input-group mb-3">
+                        <input id="api-token" type="text" class="form-control" placeholder="API Token" aria-label="API Token" aria-describedby="copy-button" value="" readonly>
+                        <div class="input-group-append">
+                            <span class="input-group-text" id="copy-button" data-toggle="tooltip" data-original-title="copied token!">copy</span>
+                        </div>
+                    </div>
+                    <p class="card-text"><small class="text-muted">You have generated barcode <span id="usageCount">0</span> times using this service!</small></p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row mt-4">
+        <div class="col-sm-12">
+            <div class="card">
+                <div class="card-header">
+                    Usage History
+                </div>
+                <div class="card-body">
+                    <table id="usageHistory" class="table table-dark">
+                        <thead>
+                        <tr>
+                            <th scope="col">#</th>
+                            <th scope="col">Text</th>
+                            <th scope="col">Type</th>
+                            <th scope="col">Image</th>
+                            <th scope="col">Date and Time</th>
+                        </tr>
+                        </thead>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<div class="footer">
+    <div style="font-size: 12px;">A project by Vanishree, for the completion of Masters degree at <a style="color: #9aaecc;" href="http://www.us.edu.pl/" target="_blank">University of Silesia in Katowice</a></div></br>
+    <div style="font-size: 13px;">Copyright &copy; 2019 <a style="color: #9aaecc;" href="https://vanishreeca.com/" target="_blank">Vanishree CA</a></div>
+</div>
+
+<script>
+    $(document).ready(function(){
+
+        $.ajax({url: "/homedata/getUserData", success: function(result){
+                var data = JSON.parse(result);
+                $(".user-name").html(data.Nickname.trim());
+                $("#api-token").val(data.Token);
+                $("#usageCount").html(data.Usage_times);
+            }});
+
+        function copyToClipboard() {
+            var element = "#api-token";
+            var $temp = $("<input>");
+            $("body").append($temp);
+            $temp.val($(element).val()).select();
+            document.execCommand("copy");
+            $temp.remove();
+
+            setTimeout(function(){
+                $('[data-toggle="tooltip"]').tooltip('hide');
+            }, 2000);
+        }
+
+        $('[data-toggle="tooltip"]').tooltip({ trigger: 'click'});
+
+        $("#copy-button").click(function(){
+            copyToClipboard();
+        });
+
+        $('#usageHistory').DataTable( {
+            "sAjaxSource": "/homedata/getUsageHistory",
+            "sAjaxDataProp": "",
+            "order": [[ 0, "asc" ]],
+            "aoColumns": [
+                { "mData": "id"},
+                { "mData": "text" },
+                { "mData": "type" },
+                { "mData": "code" },
+                { "mData": "datetime" }
+            ],
+            "initComplete": function( settings, json ) {
+                $('table.dataTable tbody tr').css("background-color", "#2c323c");
+                $('table.dataTable tbody tr').css("color", "#b1aeae");
+                $('.dataTables_wrapper .dataTables_length, .dataTables_wrapper .dataTables_filter, .dataTables_wrapper .dataTables_info, .dataTables_wrapper .dataTables_processing, .dataTables_wrapper .dataTables_paginate').css("color", "#656e74");
+            },
+            "columnDefs": [{
+                "targets": [3],
+                "render": function ( data, type, row, meta ) {
+                    return '<img src="data:image/jpeg;base64, '+data+'" style="width: 35%"/>';
+                }
+            }],
+        });
+
+    });
+</script>
+</html>
