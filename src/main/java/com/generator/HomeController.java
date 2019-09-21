@@ -129,4 +129,13 @@ public class HomeController {
 		return "redirect:login";
 	}
 
+	@RequestMapping("/codetoimage")
+	public String converter(HttpSession session) {
+		if (session.getAttribute("loggedInUser") != null)
+		{
+			return "converttoimage";
+		}
+		return "redirect:login";
+	}
+
 }
