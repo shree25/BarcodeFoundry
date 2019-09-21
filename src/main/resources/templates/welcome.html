@@ -20,6 +20,8 @@
     <link rel="stylesheet" href="https://cdn.datatables.net/1.10.19/css/jquery.dataTables.min.css">
     <script src="https://cdn.datatables.net/1.10.19/js/jquery.dataTables.min.js"></script>
 
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/1.5.3/jspdf.min.js"></script>
+
     <style type="text/css">
         body{
             color: #fff;
@@ -61,6 +63,9 @@
             background-color: #5b6f8c;
             color: #aebacc;
             text-align: center;
+        }
+        td {
+            text-align: center !important;
         }
     </style>
 
@@ -108,6 +113,7 @@
                             <th scope="col">Text</th>
                             <th scope="col">Type</th>
                             <th scope="col">Image</th>
+                            <th scope="col">Actions</th>
                             <th scope="col">Date and Time</th>
                         </tr>
                         </thead>
@@ -162,20 +168,55 @@
                 { "mData": "text" },
                 { "mData": "type" },
                 { "mData": "code" },
+                { "mData": "code" },
                 { "mData": "datetime" }
             ],
             "initComplete": function( settings, json ) {
                 $('table.dataTable tbody tr').css("background-color", "#2c323c");
                 $('table.dataTable tbody tr').css("color", "#b1aeae");
                 $('.dataTables_wrapper .dataTables_length, .dataTables_wrapper .dataTables_filter, .dataTables_wrapper .dataTables_info, .dataTables_wrapper .dataTables_processing, .dataTables_wrapper .dataTables_paginate').css("color", "#656e74");
+
+                $(".dwnld-pdf-btn").click(function(){
+                    downloadPdf($(this).attr("href"));
+                });
+
+
             },
-            "columnDefs": [{
-                "targets": [3],
-                "render": function ( data, type, row, meta ) {
-                    return '<img src="data:image/jpeg;base64, '+data+'" style="width: 35%"/>';
-                }
-            }],
+            "columnDefs":
+                [
+                    {
+                        "targets": [3],
+                        "render": function ( data, type, row, meta )
+                        {
+                            return '<img src="data:image/jpeg;base64, '+data+'" style="width: 180px"/>';
+                        }
+                    },
+                    {
+                        "targets": [4],
+                        "render": function ( data, type, row, meta )
+                        {
+                            return '<a class="btn btn-info btn-sm" href="data:image/png;base64,'+data+'" download="barcode_image.png">Download Image</a><br/>' +
+                                   '<button class="btn btn-warning btn-sm mt-1 dwnld-pdf-btn" href="'+data+'" download="barcode_pdf.pdf">Download PDF</button>';
+                        }
+                    }
+                ],
         });
+
+        function downloadPdf(src)
+        {
+            var pdf = new jsPDF();
+            var marginLeft=20;
+            var marginRight=20
+            pdf.addImage((src),"png",marginLeft,marginRight);
+            var url = pdf.output("datauristring");
+
+            var downloadLink = document.createElement("a");
+            var fileName = "barcode.pdf";
+
+            downloadLink.href = url;
+            downloadLink.download = fileName;
+            downloadLink.click();
+        }
 
     });
 </script>
