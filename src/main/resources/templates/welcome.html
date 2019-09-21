@@ -74,7 +74,8 @@
 <nav class="navbar navbar-dark">
     <span class="app-name">Barcode Foundry</span>
     <ul class="nav navbar-nav navbar-right">
-        <li><button type="button" class="btn btn-sm btn-primary" onclick="location.href ='/logout'">Logout</button></li>
+        <li><button type="button" class="btn btn-sm btn-primary" onclick="location.href ='/codetoimage'">Base64 to Image Converter</button>
+        <button type="button" class="btn btn-sm btn-danger" onclick="location.href ='/logout'">Logout</button></li>
     </ul>
 </nav>
 </body>
@@ -89,7 +90,7 @@
                     <div class="input-group mb-3">
                         <input id="api-token" type="text" class="form-control" placeholder="API Token" aria-label="API Token" aria-describedby="copy-button" value="" readonly>
                         <div class="input-group-append">
-                            <span class="input-group-text" id="copy-button" data-toggle="tooltip" data-original-title="copied token!">copy</span>
+                            <span class="input-group-text btn btn-success" id="copy-button" data-toggle="tooltip" data-original-title="token copied!">copy</span>
                         </div>
                     </div>
                     <p class="card-text"><small class="text-muted">You have generated barcode <span id="usageCount">0</span> times using this service!</small></p>
