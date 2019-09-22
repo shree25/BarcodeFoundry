@@ -51,7 +51,7 @@ public class HomedataController {
      * @return true if validation successful, false otherwise.
      */
     public synchronized boolean isCaptchaValid(String response) {
-        String secretKey = "6LfyMbkUAAAAADYUmfs44l7m7hHeFAzIXyaB_8qv";
+        String secretKey = "6Lf5vLkUAAAAAOcaZuDdSb2gBkG0DmmIhVtuAJ0W";
         try {
             String url = "https://www.google.com/recaptcha/api/siteverify?"
                     + "secret=" + secretKey
