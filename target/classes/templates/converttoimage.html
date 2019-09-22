@@ -1,0 +1,137 @@
+<bean id="templateResolver" class="org.thymeleaf.templateresolver.ServletContextTemplateResolver">
+    <property name="templateMode" value="LEGACYHTML5"/>
+    <property name="cacheable" value="false"/>
+</bean>
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="https://fonts.googleapis.com/css?family=Inconsolata|Roboto:400,700&display=swap" rel="stylesheet">
+    <title>Barcode Foundry</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.10.19/css/jquery.dataTables.min.css">
+    <script src="https://cdn.datatables.net/1.10.19/js/jquery.dataTables.min.js"></script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/1.5.3/jspdf.min.js"></script>
+
+    <style type="text/css">
+        body{
+            color: #fff;
+            background: #63738a;
+            font-family: 'Roboto', sans-serif;
+        }
+        .form-control{
+            height: 40px;
+            box-shadow: none;
+            color: #969fa4;
+        }
+        .form-control:focus{
+            border-color: #5cb85c;
+        }
+        .form-control, .btn{
+            border-radius: 3px;
+        }
+        .app-name{
+            font-size: 25px;
+            font-family: monospace;
+        }
+        .welcome-card{
+            margin-top: 50px;
+        }
+        .card{
+            background-color: #404040 !important;
+        }
+        .card-title, .card-text{
+            font-family: 'Inconsolata', monospace;
+        }
+        .footer {
+            position: fixed;
+            left: 0;
+            bottom: 0;
+            width: 100%;
+            background-color: #5b6f8c;
+            color: #aebacc;
+            text-align: center;
+        }
+        td {
+            text-align: center !important;
+        }
+    </style>
+</head>
+<body>
+
+<nav class="navbar navbar-dark">
+    <span class="app-name">Barcode Foundry</span>
+    <ul class="nav navbar-nav navbar-right">
+        <li><button type="button" class="btn btn-sm btn-primary" onclick="location.href ='/welcome'">Home</button>
+            <button type="button" class="btn btn-sm btn-danger" onclick="location.href ='/logout'">Logout</button></li>
+    </ul>
+</nav>
+</body>
+
+<div class="container">
+    <div class="row">
+        <div class="col-sm-12 welcome-card mb-5">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title font-weight-bold">Base64 to Image converter</h5>
+                    <div class="form-group">
+                        <label for="basecode">Paste Base64 code here</label>
+                        <div class="alert alert-danger" role="alert" style="display:none;">
+                            Invalid Base64 code!
+                        </div>
+                        <textarea class="form-control" id="basecode" rows="6" placeholder="Base64"></textarea>
+                    </div>
+                    <div class="form-group text-right">
+                        <button type="button" class="btn btn-sm btn-success convert-btn">CONVERT</button>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-12 text-center">
+                            <img class="conv-img" src="barcode.png">
+                        </div>
+                        <div class="col-sm-12 text-center">
+                            <a class="btn btn-sm btn-info mt-1 download-btn" href="barcode.png" download="barcode_image.png">DOWNLOAD</a>
+                        </div>
+                    </div>
+                    <p class="card-text"><small class="text-muted">Last generated barcode is available for download by default!</small></p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<div class="footer">
+    <div style="font-size: 12px;">A project by Vanishree, for the completion of Masters degree at <a style="color: #9aaecc;" href="http://www.us.edu.pl/" target="_blank">University of Silesia in Katowice</a></div></br>
+    <div style="font-size: 13px;">Copyright &copy; 2019 <a style="color: #9aaecc;" href="https://vanishreeca.com/" target="_blank">Vanishree CA</a></div>
+</div>
+
+<script>
+    $(document).ready(function(){
+
+        $(".convert-btn").click(function(){
+            var code = $("#basecode").val();
+
+            var base64regex = /^([A-Za-z0-9+/]{4})*([A-Za-z0-9+/]{3}=|[A-Za-z0-9+/]{2}==)?$/;
+
+            if (code == "" || base64regex.test(code) == false)
+            {
+                $(".alert-danger").fadeTo(2000, 500).slideUp(500, function () {
+                    $(".alert-danger").slideUp(500);
+                });
+            }else{
+                $(".conv-img").attr("src", "data:image/png;base64,"+code);
+                $(".download-btn").attr("href", "data:image/png;base64,"+code);
+            }
+        });
+    });
+</script>
+</html>
