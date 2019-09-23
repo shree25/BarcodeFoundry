@@ -5,10 +5,10 @@
 
 	<artifactId>BarcodeFoundry</artifactId>
 	<packaging>jar</packaging>
-	<name>Spring Boot Web Generator</name>
-	<description>Spring Boot Qr and Barcode Generator</description>
-	<url>https://www.mkyong.com</url>
-	<version>1.0</version>
+	<name>Barcode Foundry</name>
+	<description>1D and 2D barcode API as a service provider</description>
+	<url>https://barcode-foundry.herokuapp.com</url>
+	<version>1.2</version>
 
 	<parent>
 		<groupId>org.springframework.boot</groupId>
