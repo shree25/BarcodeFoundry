@@ -28,6 +28,11 @@ public class HomeController {
 
 	}
 
+	@RequestMapping(path="/loaderio-d34bb9aa42c09d9ef54be49f42d2f238")
+	public String loaderIoVerification() {
+		return "loaderio";
+	}
+
 	@RequestMapping(path="/")
 	public String defaultPage() {
 		return "redirect:login";
