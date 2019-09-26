@@ -17,9 +17,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import javax.imageio.ImageIO;
+import javax.servlet.http.HttpSession;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.*;
+import java.security.SecureRandom;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -172,7 +174,7 @@ public class RestController {
 
 
 
-    public String qrCode(String value) throws IOException {
+    private String qrCode(String value) throws IOException {
         String myCodeText = value.trim();
         int size = 250;
         File myFile = new File("target/classes/static/" + "qrcode.png");
@@ -237,6 +239,39 @@ public class RestController {
         }
 
         return encodedfile;
+    }
+
+    @RequestMapping("/analyse")
+    public String apiAnalyzer(
+            @RequestParam(defaultValue = "5") String testLimit,
+            @RequestParam(defaultValue = "Barcode") String codeType,
+            @RequestParam(defaultValue = "6") String textLength,
+            HttpSession session) throws IOException {
+        String email = (String) session.getAttribute("loggedInUser");
+        if (email != null && email.equals("ea"))
+        {
+            long startTime = System.currentTimeMillis();
+            for (int count = 1; count <= Integer.parseInt(testLimit); count++) {
+
+                this.response("WMWZV81DK3LW1LNVEZSZMDYWHMCA9K", this.randomString(Integer.parseInt(textLength)), codeType);
+            }
+            long stopTime = System.currentTimeMillis();
+            long elapsedTime = stopTime - startTime;
+            //System.out.println(elapsedTime);
+            return "Time taken to generate "+testLimit+" barcode is "+elapsedTime+"ms!";
+        }else{
+            return "Please login using Efficiency Analyser(ea) account <a href='/login'>here!</a>";
+        }
+    }
+
+    static final String stringScope = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz!@#$%^&*(){}|[]:,.<>0123456789";
+    static SecureRandom rand = new SecureRandom();
+
+    public String randomString( int len ){
+        StringBuilder sb = new StringBuilder( len );
+        for( int i = 0; i < len; i++ )
+            sb.append( stringScope.charAt( rand.nextInt(stringScope.length()) ) );
+        return sb.toString();
     }
 
 }
